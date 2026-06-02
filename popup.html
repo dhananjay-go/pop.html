@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JARVIS Tech Security Monitor</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#050b14;color:#00e5ff;font-family:Segoe UI,sans-serif;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0;background:red;opacity:0;pointer-events:none}
+.alert-active::before{animation:flash .5s infinite}
+@keyframes flash{50%{opacity:.12}}
+.top-alert{display:none;background:#ff0000;color:#fff;text-align:center;padding:15px;font-size:28px;font-weight:bold;animation:blink .7s infinite}
+@keyframes blink{50%{opacity:.3}}
+.container{padding:25px}
+.header{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #00e5ff55;padding-bottom:15px}
+.title{font-size:34px;font-weight:bold}
+.status{color:#00ff88;font-size:20px;font-weight:bold}
+#clock{font-size:18px;color:#9effff}
+.live-indicator{display:flex;align-items:center;gap:8px;margin-top:5px;font-size:14px;color:#00ff88}
+.live-dot{width:10px;height:10px;border-radius:50%;background:#00ff88;animation:pulse 1s infinite}
+@keyframes pulse{50%{transform:scale(1.5);opacity:.5}}
+.grid{margin-top:25px;display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.card{background:#081420;border:1px solid #00e5ff33;border-radius:12px;padding:20px;box-shadow:0 0 15px rgba(0,229,255,.15)}
+.card h3{margin-bottom:10px}
+.metric{font-size:24px;font-weight:bold;margin-bottom:10px}
+.card hr{border:none;border-top:1px solid #00e5ff33;margin:10px 0}
+.progress{width:100%;height:8px;background:#101820;border-radius:10px;margin-top:10px;overflow:hidden}
+.fill{width:85%;height:100%;background:#00e5ff}.fill2{width:72%}.fill3{width:94%}.fill4{width:61%}
+.alert-box{margin-top:25px;border:2px solid red;border-radius:15px;padding:25px;text-align:center;box-shadow:0 0 20px rgba(255,0,0,.4)}
+.alert-box h1{color:#ff4d4d}
+#countdown{font-size:90px;color:red;text-shadow:0 0 20px red}
+#terminal{color:#00ff88;margin-top:15px;font-family:Consolas,monospace}
+#logs{margin-top:20px;height:260px;overflow:hidden;text-align:left;font-family:Consolas,monospace;line-height:1.8}
+.radar-container{position:relative;width:220px;height:220px;margin:auto}
+.hud-ring{position:absolute;width:220px;height:220px;border:2px dashed #00e5ff;border-radius:50%;animation:spinHUD 12s linear infinite}
+@keyframes spinHUD{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+.radar{position:absolute;left:20px;top:20px;width:180px;height:180px;border:2px solid #00e5ff;border-radius:50%;overflow:hidden}
+.radar::before{content:"";position:absolute;width:100%;height:1px;background:#00e5ff55;top:50%}
+.radar::after{content:"";position:absolute;width:1px;height:100%;background:#00e5ff55;left:50%}
+.sweep{position:absolute;width:50%;height:50%;left:50%;top:0;transform-origin:0% 100%;background:linear-gradient(90deg,transparent,rgba(0,229,255,.6));animation:radarSpin 2.5s linear infinite}
+@keyframes radarSpin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+.dot{position:absolute;width:8px;height:8px;border-radius:50%;background:#00e5ff;box-shadow:0 0 10px #00e5ff}
+.dot1{top:30px;left:120px}.dot2{top:130px;left:50px}.dot3{top:90px;left:140px}
+.footer{text-align:center;color:#777;margin-top:20px}
+</style>
+</head>
+<body>
+<div class="top-alert" id="banner">⚠ CRITICAL SECURITY INCIDENT DETECTED ⚠</div>
+<div class="container">
+<div class="header">
+<div class="title">JARVIS TECH</div>
+<div>
+<div class="status" id="status">SYSTEM SECURE</div>
+<div id="clock"></div>
+<div class="live-indicator"><span class="live-dot"></span>LIVE</div>
+</div>
+</div>
+
+<div class="grid">
+<div class="card"><h3>Firewall Integrity</h3><div class="metric">98%</div><hr>Status : ACTIVE<br>Rules Loaded : 1248<br>Blocked Attempts : 14382<br>Last Scan : 00:02:17<div class="progress"><div class="fill"></div></div></div>
+<div class="card"><h3>Network Status</h3><div class="metric">STABLE</div><hr>Nodes Online : 124<br>Active Sessions : 247<br>Bandwidth : 1.8 Gbps<br>Packet Loss : 0.2%<div class="progress"><div class="fill fill2"></div></div></div>
+<div class="card"><h3>Threat Detection</h3><div class="metric">NONE</div><hr>Threat Score : 0<br>IDS Status : ACTIVE<br>Last Alert : 12h Ago<br>Risk Level : LOW<div class="progress"><div class="fill fill3"></div></div></div>
+<div class="card"><h3>AI Monitor</h3><div class="metric">ACTIVE</div><hr>Models Loaded : 12<br>Confidence : 98.7%<br>Analysis : Running<br>Mode : Autonomous</div>
+<div class="card"><h3>System Core</h3><div class="metric">ONLINE</div><hr>CPU : 42%<br>Memory : 71%<br>Uptime : 142 Days<br>Temp : 53°C<div class="progress"><div class="fill fill4"></div></div></div>
+
+<div class="card">
+<h3>Threat Radar</h3>
+<div class="radar-container">
+<div class="hud-ring"></div>
+<div class="radar"><div class="sweep"></div><div class="dot dot1"></div><div class="dot dot2"></div><div class="dot dot3"></div></div>
+</div>
+</div>
+
+<div class="card"><h3>Threat Origins</h3><div class="metric">76</div><hr>India : 12<br>Germany : 4<br>USA : 8<br>Russia : 15<br>Unknown : 37</div>
+<div class="card"><h3>Network Traffic</h3><div class="metric" id="traffic">0</div>Packets / sec</div>
+<div class="card"><h3>Intrusion Attempts</h3><div class="metric" id="intrusions">0</div></div>
+<div class="card"><h3>Threat Score</h3><div class="metric" id="threatScore">0</div>Risk Analysis Engine</div>
+<div class="card"><h3>Attacker Status</h3><div class="metric" id="attacker">NOT DETECTED</div><hr>Tracking : Enabled<br>Attribution : Unknown<br>Persistence : None<br>Severity : Low</div>
+</div>
+
+<div class="alert-box">
+<h1>JARVIS TECH SECURITY CENTER</h1>
+<div id="countdown">60</div>
+<div id="terminal"></div>
+<div id="logs"></div>
+</div>
+<div class="footer">Cybersecurity Awareness Demonstration</div>
+</div>
+
+<script>
+setInterval(()=>{document.getElementById("clock").innerHTML=new Date().toLocaleTimeString()},1000);
+let score=0; setInterval(()=>{if(score<97){score++; document.getElementById("threatScore").innerHTML=score;}},50);
+setInterval(()=>{document.getElementById("traffic").innerHTML=Math.floor(Math.random()*9000)+1000;},1000);
+let attempts=0; setInterval(()=>{attempts+=Math.floor(Math.random()*5)+1; document.getElementById("intrusions").innerHTML=attempts;},1200);
+
+window.onload=function(){
+let text="Initializing JARVIS Security Core..."; let i=0;
+(function type(){ if(i<text.length){document.getElementById("terminal").innerHTML+=text.charAt(i++); setTimeout(type,50);} })();
+
+setTimeout(()=>{
+document.body.classList.add("alert-active");
+document.getElementById("banner").style.display="block";
+document.getElementById("status").innerHTML="THREAT LEVEL: CRITICAL";
+document.getElementById("status").style.color="#ff0000";
+document.getElementById("attacker").innerHTML="ACTIVE INSIDE NETWORK";
+alert("⚠ SECURITY ALERT: JARVIS TECH NETWORK BREACH DETECTED");
+startLogs(); startCountdown();
+},3000);
+};
+
+function startCountdown(){
+let sec=60;
+setInterval(()=>{ if(sec>0){ document.getElementById("countdown").innerHTML=--sec; } },1000);
+}
+
+function typeLog(text){
+let i=0;
+const line=document.createElement("div");
+document.getElementById("logs").appendChild(line);
+const t=setInterval(()=>{
+ if(i<text.length){ line.innerHTML+=text.charAt(i++); }
+ else clearInterval(t);
+},20);
+}
+
+function startLogs(){
+const logs=[
+"Unauthorized connection detected...",
+"Firewall breach confirmed...",
+"Unknown hostile actor detected...",
+"Geolocation trace failed...",
+"BlackHat signature identified...",
+"Root access acquired...",
+"Security administrator locked out...",
+"Lateral movement detected...",
+"Database access initiated...",
+"AI defense response activated...",
+"AI defense response failed...",
+"Threat actor maintaining persistence...",
+"Incident severity escalated...",
+"Critical infrastructure compromised..."
+];
+let x=0;
+const interval=setInterval(()=>{
+ if(x<logs.length){ typeLog('> '+logs[x]); x++; }
+ else clearInterval(interval);
+},1000);
+}
+</script>
+</body>
+</html>
